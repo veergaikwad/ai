@@ -160,6 +160,42 @@ print("Action:", table[(location, status)])
 
 **Answer:** Performance: safety, reaching destination, passenger comfort, low time and cost. Environment: roads, traffic, pedestrians, passengers and signals. Actuators: steering, brakes, accelerator, horn and indicators. Sensors: cameras, GPS, radar, LiDAR and speedometer.
 
+```python
+# Table-driven agent for an Autonomous Taxi
+# Percept = (traffic_light, road_ahead, passenger)
+
+table = {
+    ("Red",    "Clear",    "Onboard"): "Brake and Wait",
+    ("Red",    "Obstacle", "Onboard"): "Brake and Wait",
+    ("Red",    "Clear",    "Waiting"): "Brake and Wait",
+    ("Red",    "Obstacle", "Waiting"): "Brake and Wait",
+    ("Yellow", "Clear",    "Onboard"): "Slow Down",
+    ("Yellow", "Obstacle", "Onboard"): "Brake",
+    ("Yellow", "Clear",    "Waiting"): "Slow Down",
+    ("Yellow", "Obstacle", "Waiting"): "Brake",
+    ("Green",  "Clear",    "Onboard"): "Accelerate",
+    ("Green",  "Obstacle", "Onboard"): "Brake and Honk",
+    ("Green",  "Clear",    "Waiting"): "Stop and Pick Up Passenger",
+    ("Green",  "Obstacle", "Waiting"): "Brake and Honk",
+}
+
+def taxi_agent(percept):
+    return table.get(percept, "Slow Down and Wait")   # default if percept not in table
+
+# Test with sample percepts
+tests = [
+    ("Green",  "Clear",    "Onboard"),
+    ("Red",    "Clear",    "Onboard"),
+    ("Green",  "Obstacle", "Onboard"),
+    ("Yellow", "Clear",    "Waiting"),
+    ("Green",  "Clear",    "Waiting"),
+    ("Blue",   "Clear",    "Onboard"),   # unknown percept
+]
+
+for p in tests:
+    print("Percept:", p, "-> Action:", taxi_agent(p))
+```
+
 | Property | Classification | Example |
 | --- | --- | --- |
 | Observability | Partially observable | A pedestrian is hidden behind a bus. |
